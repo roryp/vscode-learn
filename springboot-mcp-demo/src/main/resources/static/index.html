@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spring Boot MCP Demo &mdash; Todos</title>
+    <link rel="icon"
+          href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22&gt;&lt;text y=%2214%22 font-size=%2214%22&gt;%E2%9C%85&lt;/text&gt;&lt;/svg&gt;" />
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --accent-2: #22c55e;
+            --danger: #ef4444;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            background: linear-gradient(160deg, #0f172a, #1e293b);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2.5rem 1rem;
+        }
+
+        main {
+            width: 100%;
+            max-width: 640px;
+        }
+
+        header h1 {
+            margin: 0 0 0.25rem;
+            font-size: 1.8rem;
+        }
+
+        header p {
+            margin: 0 0 1.5rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            background: var(--card);
+            border: 1px solid #334155;
+            border-radius: 999px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .badge code { color: var(--accent); }
+
+        form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            background: var(--card);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus {
+            outline: 2px solid var(--accent);
+            border-color: transparent;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.75rem 1.2rem;
+            transition: transform 0.05s ease, opacity 0.2s ease;
+        }
+
+        button:active { transform: scale(0.97); }
+
+        .add-btn { background: var(--accent); color: #08263a; }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        li.todo {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: var(--card);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+        }
+
+        li.todo input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--accent-2);
+            cursor: pointer;
+        }
+
+        li.todo .title {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        li.todo.completed .title {
+            text-decoration: line-through;
+            color: var(--muted);
+        }
+
+        li.todo .id {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid transparent;
+            padding: 0.35rem 0.6rem;
+        }
+
+        .delete-btn:hover { border-color: var(--danger); }
+
+        .empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 2rem 0;
+            font-style: italic;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        footer a { color: var(--accent); }
+    </style>
+</head>
+<body>
+<main>
+    <header>
+        <h1>Todo MCP Demo</h1>
+        <p>A Spring Boot REST API whose endpoints are also exposed as Model Context Protocol (MCP) tools.</p>
+    </header>
+
+    <div class="badges">
+        <span class="badge">REST: <code>/api/todos</code></span>
+        <span class="badge">MCP: <code>/mcp</code></span>
+        <span class="badge">Health: <code>/actuator/health</code></span>
+    </div>
+
+    <form id="todo-form" autocomplete="off">
+        <input id="new-todo" type="text" name="title" placeholder="What needs doing?"
+               aria-label="New todo title" data-testid="new-todo-input" />
+        <button type="submit" class="add-btn" id="add-btn" data-testid="add-todo">Add</button>
+    </form>
+
+    <ul id="todo-list" data-testid="todo-list"></ul>
+    <p id="empty-state" class="empty" hidden>No todos yet &mdash; add one above or ask Copilot to create one via MCP.</p>
+
+    <footer>
+        Powered by Spring Boot &amp; Spring AI MCP &middot;
+        <a href="/actuator/health" target="_blank" rel="noopener">health</a>
+    </footer>
+</main>
+
+<script>
+    const API = "/api/todos";
+    const list = document.getElementById("todo-list");
+    const emptyState = document.getElementById("empty-state");
+    const form = document.getElementById("todo-form");
+    const input = document.getElementById("new-todo");
+
+    async function loadTodos() {
+        const res = await fetch(API);
+        if (!res.ok) {
+            console.error("Failed to load todos", res.status);
+            return;
+        }
+        const todos = await res.json();
+        render(todos);
+    }
+
+    function render(todos) {
+        list.innerHTML = "";
+        emptyState.hidden = todos.length > 0;
+        for (const todo of todos) {
+            const li = document.createElement("li");
+            li.className = "todo" + (todo.completed ? " completed" : "");
+            li.dataset.testid = "todo-item";
+            li.dataset.id = todo.id;
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = todo.completed;
+            checkbox.setAttribute("aria-label", "Toggle " + todo.title);
+            checkbox.addEventListener("change", () => toggleTodo(todo, checkbox.checked));
+
+            const title = document.createElement("span");
+            title.className = "title";
+            title.textContent = todo.title;
+
+            const id = document.createElement("span");
+            id.className = "id";
+            id.textContent = "#" + todo.id;
+
+            const del = document.createElement("button");
+            del.className = "delete-btn";
+            del.type = "button";
+            del.textContent = "Delete";
+            del.dataset.testid = "delete-todo";
+            del.addEventListener("click", () => deleteTodo(todo.id));
+
+            li.append(checkbox, title, id, del);
+            list.appendChild(li);
+        }
+    }
+
+    async function addTodo(title) {
+        const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title })
+        });
+        if (res.ok) {
+            await loadTodos();
+        } else {
+            console.error("Failed to add todo", res.status);
+        }
+    }
+
+    async function toggleTodo(todo, completed) {
+        const res = await fetch(`${API}/${todo.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title: todo.title, completed })
+        });
+        if (res.ok) {
+            await loadTodos();
+        }
+    }
+
+    async function deleteTodo(id) {
+        const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+        if (res.ok) {
+            await loadTodos();
+        }
+    }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const title = input.value.trim();
+        if (!title) return;
+        input.value = "";
+        addTodo(title);
+    });
+
+    loadTodos();
+</script>
+</body>
+</html>
