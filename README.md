@@ -404,3 +404,93 @@ powershell -ExecutionPolicy Bypass -File scripts\mcp-smoke-test.ps1
 - Model Context Protocol — https://modelcontextprotocol.io
 - VS Code MCP docs — https://code.visualstudio.com/docs/copilot/chat/mcp-servers
 - GitHub Copilot coding agent — https://docs.github.com/en/copilot/using-github-copilot/coding-agent
+
+---
+
+## Appendix — How this project was created
+
+This project was bootstrapped with **Spring Initializr**; no files were written
+by hand at the start. This appendix captures the exact recipe so the scaffolding
+step can be reproduced or demoed from scratch.
+
+### Option A — VS Code Spring Initializr (used for this project)
+
+The **Spring Boot Extension Pack** adds Initializr straight into VS Code, so the
+project never left the editor.
+
+1. Command Palette (`Ctrl+Shift+P`) → **`Spring Initializr: Create a Maven Project`**.
+2. Answer the prompts in order:
+
+   | Prompt | Value |
+   |---|---|
+   | Spring Boot version | **4.1.0** |
+   | Language | **Java** |
+   | Group Id | **com.example** |
+   | Artifact Id | **springboot-mcp-demo** |
+   | Packaging type | **Jar** |
+   | Java version | **25** |
+   | Dependencies | **Spring Web** · **Spring Boot Actuator** · **Validation** · **MCP Server** |
+
+3. Pick a target folder → VS Code generates the project and offers to **Open** it.
+
+### Option B — start.spring.io (browser, good for a live demo)
+
+The same result can be generated from the web UI. This link pre-fills every field
+above — expand **Dependencies** on screen to show them being added, then click
+**Generate**:
+
+```
+https://start.spring.io/#!type=maven-project&language=java&platformVersion=4.1.0&packaging=jar&jvmVersion=25&groupId=com.example&artifactId=springboot-mcp-demo&name=springboot-mcp-demo&description=Spring%20Boot%20Todo%20API%20exposed%20as%20MCP%20tools&packageName=com.example.tododemo&dependencies=web,actuator,validation,spring-ai-mcp-server
+```
+
+The four dependency IDs are `web`, `actuator`, `validation`, and
+`spring-ai-mcp-server`.
+
+### Option C — Ask GitHub Copilot (agent mode)
+
+You can also have Copilot drive the scaffold for you. In the **Chat** view
+(`Ctrl+Alt+I`), switch the mode dropdown to **Agent** and paste:
+
+```text
+Build a Spring Boot API in VS Code using Spring Initializr: a Maven project on
+Spring Boot 4.1.0 and Java 25, group com.example, artifact springboot-mcp-demo,
+base package com.example.tododemo, with the Spring Web, Actuator, Validation,
+and MCP Server dependencies.
+```
+
+> **How this repo was actually created:** the scaffold wasn't triggered by a
+> dedicated "Spring Initializr" prompt. It happened while Copilot executed a
+> broader build request — the origin prompt asked it to *"Build a Spring Boot API
+> in VS Code"* (among five demo steps), and a follow-up *"Start implementation"*
+> authorized the agent, which then chose Spring Initializr with the settings
+> above. The prompt block above is the distilled, reproducible version of that
+> step for demos.
+
+### How those selections map to `pom.xml`
+
+Initializr translated the four dependencies into these entries in
+[pom.xml](pom.xml):
+
+| Initializr dependency | Resulting artifact |
+|---|---|
+| Spring Web | `spring-boot-starter-webmvc` |
+| Spring Boot Actuator | `spring-boot-starter-actuator` |
+| Validation | `spring-boot-starter-validation` |
+| MCP Server | `spring-ai-starter-mcp-server-webmvc` (+ `spring-ai-bom` 2.0.0) |
+
+### Notes for anyone reproducing it
+
+- **Base package** was set to `com.example.tododemo`, which is why the code lives
+  under `src/main/java/com/example/tododemo/`.
+- **Persistence was deliberately omitted.** No JPA/database dependency was
+  selected so that "add persistent storage" could become the Step 5 enhancement
+  handed to the GitHub Copilot cloud agent (see
+  [docs/copilot-agent-issue.md](docs/copilot-agent-issue.md)).
+- **Spring Web drives the MCP transport.** Because *Spring Web* is present,
+  Initializr resolves the MCP Server dependency to its **WebMVC** variant, so the
+  server can speak HTTP (later switched to Streamable-HTTP in
+  [application.properties](src/main/resources/application.properties)).
+
+> Everything after generation — the `Todo` model, `TodoService`, `TodoController`,
+> the `@McpTool` methods in `TodoTools`, the static UI, and the tests — was added
+> on top of this scaffold as described in **Step 2** and **Step 3** above.
