@@ -5,17 +5,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.hamcrest.Matchers.containsString;
+
 /**
- * Full-context integration test of the REST API (loads the whole app, including
- * the MCP server auto-configuration) driven through {@link MockMvc}.
+ * Full-context integration test of the merged {@code TodoController} (loads the
+ * whole app, including the MCP server auto-configuration) driven through
+ * {@link MockMvc}. Covers both the JSON REST API and the Thymeleaf UI.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,5 +63,19 @@ class TodoApiIntegrationTest {
     void missingTodoReturns404() throws Exception {
         mvc.perform(get("/api/todos/99999"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    void uiAddFormRedirectsThenItemRendersOnHomePage() throws Exception {
+        // the add form POSTs and redirects (Post/Redirect/Get)
+        mvc.perform(post("/todos").param("title", "Water the plants"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        // the home page renders the todo server-side via Thymeleaf
+        mvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Water the plants")));
     }
 }

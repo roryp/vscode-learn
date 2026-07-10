@@ -34,7 +34,7 @@ list can be filtered to "what's due".
 - [ ] New MCP tool `set_due_date(id, dueDate)` and the existing tools continue to
       work; `list_todos` accepts an optional `filter` argument matching the REST
       `due` values.
-- [ ] The web UI (`static/index.html`) shows each todo's due date and visually
+- [ ] The web UI (`templates/index.html`) shows each todo's due date and visually
       flags overdue items.
 - [ ] Existing unit/integration tests still pass; add tests for persistence,
       the `dueDate` field, and the filter.
