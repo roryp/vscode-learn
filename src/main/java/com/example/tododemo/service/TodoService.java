@@ -10,13 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Instant;
 import java.util.List;
 
-/**
- * Business logic for managing todos.
- *
- * <p>Shared by both the REST controller ({@code TodoController}) and the MCP
- * tools ({@code TodoTools}) so the HTTP API and the MCP tools always operate on
- * exactly the same data and rules.
- */
+/** Shared todo operations used by the web UI and MCP tools. */
 @Service
 public class TodoService {
 
@@ -37,13 +31,6 @@ public class TodoService {
 
     public Todo add(String title) {
         Todo todo = new Todo(null, requireTitle(title), false, Instant.now());
-        return repository.save(todo);
-    }
-
-    public Todo update(Long id, String title, boolean completed) {
-        Todo todo = get(id);
-        todo.setTitle(requireTitle(title));
-        todo.setCompleted(completed);
         return repository.save(todo);
     }
 

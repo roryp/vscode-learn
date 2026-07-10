@@ -1,17 +1,16 @@
-# Spring Boot Todo — REST + Web UI + MCP
+# Spring Boot Todo — Web UI to MCP
 
-A small Spring Boot 4.1 / Java 25 Todo app that exposes the **same** operations three ways:
+A small Spring Boot 4.1 / Java 25 Todo app that starts as a web app and exposes
+the same data to GitHub Copilot through MCP:
 
 - a **Thymeleaf web UI** (`GET /`),
-- a **JSON REST API** (`/api/todos`),
 - and **MCP tools** (`POST /mcp`) that GitHub Copilot can call.
 
-All three delegate to one `TodoService`, so they can never drift apart.
+Both delegate to one `TodoService`.
 
 ```mermaid
 flowchart LR
     UI["Web UI<br/>Thymeleaf · /"] --> SVC
-    REST["REST API<br/>/api/todos"] --> SVC
     MCP["MCP server<br/>/mcp"] --> SVC
     SVC["TodoService<br/>(shared logic)"]
 ```
@@ -27,27 +26,15 @@ flowchart LR
 ```
 
 - Web UI: http://localhost:8080
-- REST: http://localhost:8080/api/todos
 - Health: http://localhost:8080/actuator/health
 
-The web UI and the REST API live in
+## Step 1 — The web app
+
+The web app has four controller methods: show, add, toggle, and delete. See
 [TodoController.java](src/main/java/com/example/tododemo/web/TodoController.java)
-(a single `@Controller`); the MCP tools are in
-[TodoTools.java](src/main/java/com/example/tododemo/mcp/TodoTools.java).
+and [index.html](src/main/resources/templates/index.html).
 
-REST surface:
-
-| Method | Path | Purpose |
-|---|---|---|
-| `GET` | `/api/todos` | List all |
-| `GET` | `/api/todos/{id}` | Get one |
-| `POST` | `/api/todos` | Create (`{"title":"..."}`) |
-| `PUT` | `/api/todos/{id}` | Update title + completion |
-| `DELETE` | `/api/todos/{id}` | Delete |
-
----
-
-## MCP tools
+## Step 2 — Add MCP
 
 Each method in `TodoTools` is annotated with `@McpTool` and delegates to `TodoService`:
 
@@ -87,7 +74,7 @@ In the Chat view (Agent mode), enable the `todo-mcp` tools and ask, e.g.:
 ## Test
 
 ```powershell
-.\mvnw.cmd test                                                       # 11 tests: service, REST, UI, MCP context
+.\mvnw.cmd test                                                       # service, web UI, and MCP context
 powershell -ExecutionPolicy Bypass -File scripts\mcp-smoke-test.ps1   # MCP handshake + tools/call (app must be running)
 ```
 

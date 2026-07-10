@@ -13,9 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Thread-safe in-memory store for {@link Todo} items.
  *
- * <p>Intentionally not backed by a database. This keeps the demo self-contained
- * and gives the GitHub Copilot cloud-agent step (step 5) a natural, well-scoped
- * enhancement to make: replace this with Spring Data JPA + an H2 database.
+ * <p>Intentionally in memory so persistence remains a separate follow-up exercise.
  */
 @Repository
 public class TodoRepository {
@@ -43,9 +41,5 @@ public class TodoRepository {
 
     public boolean deleteById(Long id) {
         return store.remove(id) != null;
-    }
-
-    public long count() {
-        return store.size();
     }
 }

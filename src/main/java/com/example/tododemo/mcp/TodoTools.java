@@ -8,18 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Exposes the todo operations as Model Context Protocol (MCP) tools.
- *
- * <p>Each {@link McpTool}-annotated method becomes a tool that any MCP client
- * (for example, GitHub Copilot in VS Code) can discover and invoke. The methods
- * delegate to the same {@link TodoService} used by the REST controller, so the
- * REST API and the MCP tools always act on identical data.
- *
- * <p>The Spring AI MCP server auto-configuration scans for these annotations by
- * default ({@code spring.ai.mcp.server.annotation-scanner.enabled=true}) and
- * publishes them over the Streamable-HTTP endpoint at {@code /mcp}.
- */
+/** Exposes the shared todo service as MCP tools. */
 @Component
 public class TodoTools {
 

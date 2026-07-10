@@ -5,9 +5,7 @@ import java.time.Instant;
 /**
  * A single todo item.
  *
- * <p>Kept as a mutable POJO so the in-memory store can update the completion
- * status and title in place. Jackson serializes this directly to/from JSON for
- * both the REST API and the MCP tool responses.
+ * <p>Mutable so the in-memory store can assign an id and change completion.
  */
 public class Todo {
 
@@ -36,10 +34,6 @@ public class Todo {
 
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public boolean isCompleted() {

@@ -13,11 +13,10 @@ Add persistent storage (Spring Data JPA + H2) and a `dueDate` field with filteri
 
 ### Background
 
-`springboot-mcp-demo` is a Spring Boot 4.1 / Java 25 Todo API. Today todos are
+`springboot-mcp-demo` is a Spring Boot 4.1 / Java 25 Todo app. Today todos are
 kept in a **non-persistent, in-memory** store (`TodoRepository` backed by a
-`ConcurrentHashMap`), so everything is lost on restart. The same operations are
-exposed both as REST endpoints (`TodoController`) and as MCP tools (`TodoTools`),
-both delegating to `TodoService`.
+`ConcurrentHashMap`), so everything is lost on restart. The web UI
+(`TodoController`) and MCP tools (`TodoTools`) both delegate to `TodoService`.
 
 We want todos to survive restarts and to support an optional **due date** so the
 list can be filtered to "what's due".
@@ -27,15 +26,11 @@ list can be filtered to "what's due".
 - [ ] Todos are persisted with **Spring Data JPA** and an **H2** database
       (file-based so data survives a restart).
 - [ ] `Todo` gains an optional `dueDate` (`LocalDate`, nullable) field, returned
-      by the REST API and the MCP tools.
-- [ ] `POST /api/todos` and `PUT /api/todos/{id}` accept an optional `dueDate`.
-- [ ] New endpoint `GET /api/todos?due=today|overdue|all` filters accordingly
-      (`all` is the default and preserves current behaviour).
-- [ ] New MCP tool `set_due_date(id, dueDate)` and the existing tools continue to
-      work; `list_todos` accepts an optional `filter` argument matching the REST
-      `due` values.
-- [ ] The web UI (`templates/index.html`) shows each todo's due date and visually
-      flags overdue items.
+      by the MCP tools.
+- [ ] The web form accepts an optional due date.
+- [ ] The web UI shows each todo's due date and visually flags overdue items.
+- [ ] Add an MCP tool `set_due_date(id, dueDate)`; `list_todos` accepts an
+      optional `filter` argument with `today`, `overdue`, or `all`.
 - [ ] Existing unit/integration tests still pass; add tests for persistence,
       the `dueDate` field, and the filter.
 
@@ -43,10 +38,10 @@ list can be filtered to "what's due".
 
 - Add `spring-boot-starter-data-jpa` and the `com.h2database:h2` runtime
   dependency to `pom.xml`.
-- Convert `Todo` into a JPA `@Entity` (keep the existing JSON shape; add
-  `dueDate`). Replace the hand-rolled `TodoRepository` with a Spring Data
+- Convert `Todo` into a JPA `@Entity` and add `dueDate`. Replace the hand-rolled
+      `TodoRepository` with a Spring Data
   `JpaRepository<Todo, Long>`; keep `TodoService` as the single shared entry
-  point for both `TodoController` and `TodoTools`.
+      point for the web UI and MCP tools.
 - Configure H2 in `application.properties`
   (`spring.datasource.url=jdbc:h2:file:./data/tododb`,
   `spring.jpa.hibernate.ddl-auto=update`). Optionally enable the H2 console.

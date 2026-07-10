@@ -41,16 +41,6 @@ class TodoServiceTest {
     }
 
     @Test
-    void updateChangesTitleAndStatus() {
-        Todo todo = service.add("Old title");
-
-        Todo updated = service.update(todo.getId(), "New title", true);
-
-        assertThat(updated.getTitle()).isEqualTo("New title");
-        assertThat(updated.isCompleted()).isTrue();
-    }
-
-    @Test
     void getMissingTodoThrows() {
         assertThatThrownBy(() -> service.get(999L))
                 .isInstanceOf(ResponseStatusException.class);
