@@ -89,3 +89,15 @@ Todos are kept **in memory** on purpose. A ready-to-assign issue,
 [docs/copilot-agent-issue.md](docs/copilot-agent-issue.md), asks the cloud agent to add
 Spring Data JPA + H2 persistence and a `dueDate` field. Assign it to **@copilot** (or use
 **"Delegate to coding agent"** in the GitHub Pull Requests view) and review the PR it opens.
+
+---
+
+## Demo recording script
+
+[scripts/script.md](scripts/script.md) is a four-episode walkthrough that uses this project
+to demo **Java** development in **VS Code** with **GitHub Copilot**:
+
+1. Build and debug a Spring Boot app (Extension Pack for Java, Spring Initializr, breakpoints, live memory view).
+2. Expose the endpoints to Copilot as **MCP** tools.
+3. Let Copilot test the UI end to end with **Playwright**.
+4. Hand a new feature to the **Copilot cloud agent** and merge the PR it opens.
