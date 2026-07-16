@@ -2,6 +2,13 @@
 
 target/
 .mvn/wrapper/maven-wrapper.jar
+
+# Demo recording artifacts and capture tooling
+scripts/Demo-Recording-Script.docx
+scripts/capture-initializr.ps1
+scripts/capture-window.ps1
+scripts/screenshots/
+
 !**/src/main/**/target/
 !**/src/test/**/target/
 

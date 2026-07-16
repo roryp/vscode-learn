@@ -26,7 +26,7 @@
 
 ![Todo web app](../docs/images/01-web-app.png)
 
-**The Spring Initializr version picker — auto-captured by `scripts/capture-initializr.ps1`:**
+**The Spring Initializr version picker:**
 
 ![Spring Initializr version picker](../docs/images/00-initializr.png)
 
@@ -44,7 +44,7 @@
 
 ![Actuator health](../docs/images/02-actuator-health.png)
 
-**Spring Boot Dashboard Memory view — live heap gauge (auto-captured by `scripts/capture-window.ps1`):**
+**Spring Boot Dashboard Memory view — live heap gauge:**
 
 ![Memory view](../docs/images/05-memory-view.png)
 
@@ -123,7 +123,7 @@
 MCP smoke test PASSED.
 ```
 
-**Illustrative browser state during a Playwright run — captured by `scripts/screenshots/capture.mjs`; the live Copilot tool calls are shown during the demo:**
+**Illustrative browser state during a Playwright run; the live Copilot tool calls are shown during the demo:**
 
 ![Playwright run](../docs/images/07-playwright-run.png)
 
@@ -155,11 +155,11 @@ MCP smoke test PASSED.
 | Pull-request branch + Terminals | Check out the updated PR branch. Run `.\mvnw.cmd test`; start the app in one terminal; in another run `powershell -ExecutionPolicy Bypass -File scripts\mcp-smoke-test.ps1 -ExpectedTools add_todo,complete_todo,delete_todo,get_todo,list_todos,set_due_date`. Then create a todo with a due date, restart the app, and confirm it persists. | "Before I consider merging, I run the tests, verify the expanded six-tool MCP contract, and check the two key behaviors locally: due dates work and data survives a restart." |
 | PR review | Review the results and leave comments if needed. Keep the PR draft and unmerged during this recording; only mark it ready and merge after the review is complete and the baseline has been preserved. | "The agent produced the implementation, but the review, verification, and final merge decision still belong to me." |
 
-**The prepared issue assigned to the Copilot coding agent (@copilot) — auto-captured by `scripts/screenshots/capture.mjs`:**
+**The prepared issue assigned to the Copilot coding agent (@copilot):**
 
 ![Issue assigned to Copilot](../docs/images/08-issue-assigned.png)
 
-**The draft pull request the Copilot agent opened — its 13-file diff includes the JPA entity, repository, `dueDate`, and tests — auto-captured by `scripts/screenshots/capture.mjs`:**
+**The draft pull request the Copilot agent opened — its 13-file diff includes the JPA entity, repository, `dueDate`, and tests:**
 
 ![Agent pull request](../docs/images/09-agent-pr.png)
 
