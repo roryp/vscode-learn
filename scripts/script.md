@@ -8,7 +8,7 @@
 
 ### Intro — Talking head (~20s)
 
-> In this video, I'll build and debug a Spring Boot app in VS Code. I'll install the Java and Spring extension packs, scaffold the app with Spring Initializr, and run it directly from the editor. Then I'll use breakpoints to step through the code and Actuator for live runtime insight. Let's jump right in.
+> In this video, I'll build and debug a Spring Boot Java app in VS Code. I'll install the Java and Spring extension packs, scaffold the app with Spring Initializr, and run it directly from the editor. Then I'll use breakpoints to step through the code and monitor the app's health and memory while it runs. Let's jump right in.
 
 **Do:** End on “let's jump right in,” then cut to screen share.
 
@@ -50,7 +50,7 @@
 
 ### Outro — Talking head (~20s)
 
-> In this video, I built and ran a Spring Boot app in VS Code, debugged it with breakpoints, and inspected its health and memory with Actuator. That gave me one workflow for setup, development, and runtime diagnostics. In the next video, I'll connect the app to GitHub Copilot through MCP.
+> In this video, I built and ran a Spring Boot app in VS Code, debugged it with breakpoints, and inspected its health and memory. That gave me one workflow for setup, development, and runtime diagnostics. In the next video, I'll connect the app to GitHub Copilot through MCP.
 
 ---
 
@@ -58,7 +58,7 @@
 
 ### Intro — Talking head (~20s)
 
-> In this video, I'll show how a Spring Boot Todo app becomes a set of tools GitHub Copilot can call directly. I'll use Spring AI to expose the existing Java operations through MCP, while keeping the web UI and Copilot connected to the same service. Let's jump right in.
+> In this video, I'll show how a Spring Boot app becomes a set of tools GitHub Copilot can call directly. I'll use Spring AI to expose the existing Java operations through MCP, while keeping the web UI and Copilot connected to the same service. Let's jump right in.
 
 **Do:** End on “let's jump right in,” then cut to screen share.
 
@@ -129,7 +129,7 @@ MCP smoke test PASSED.
 
 ### Outro — Talking head (~20s)
 
-> In this video, I used Copilot and Playwright to test the Todo app in a real browser, then backed that up with automated checks across the application. That covered both the user experience and the code behind it. In the next video, I'll delegate a complete feature to the Copilot coding agent.
+> In this video, I used Copilot and Playwright to test my Java app in a real browser, then backed that up with automated checks across the application. That covered both the user experience and the code behind it. In the next video, I'll delegate a complete feature to the Copilot coding agent.
 
 ---
 
