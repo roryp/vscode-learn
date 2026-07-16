@@ -1,7 +1,7 @@
 # Spring Boot Todo — Web UI to MCP
 
 A small Spring Boot 4.1 / Java 25 Todo app that starts as a web app and exposes
-the same data to GitHub Copilot through MCP:
+the same data to MCP clients such as GitHub Copilot:
 
 - a **Thymeleaf web UI** (`GET /`),
 - and **MCP tools** (`POST /mcp`) that GitHub Copilot can call.
@@ -17,12 +17,38 @@ flowchart LR
 
 **Stack:** Java 25 · Spring Boot 4.1.0 · Spring AI 2.0.0 · Thymeleaf · Maven
 
+> [!IMPORTANT]
+> This repository is a local development and demonstration sample, not a
+> production deployment. Todos are stored in memory, the MCP mutation tools
+> are unauthenticated, and Actuator returns detailed health information. Do not
+> expose port 8080 to untrusted networks. Before deploying, add authentication,
+> authorization, persistent storage, and production-appropriate Actuator settings.
+
 ---
+
+## Prerequisites
+
+- JDK 25 (`java -version` should report version 25)
+- VS Code with the **Extension Pack for Java** and **Spring Boot Extension Pack**
+- GitHub Copilot access for the Copilot and MCP workflow
+- Node.js 18 or newer and Microsoft Edge for the optional Playwright workflow
+- PowerShell 7, or Windows PowerShell 5.1 on Windows, for the optional MCP smoke test
+
+Maven does not need to be installed separately; the repository includes the
+Maven Wrapper.
 
 ## Run it
 
+**Windows (PowerShell):**
+
 ```powershell
 .\mvnw.cmd spring-boot:run
+```
+
+**macOS or Linux:**
+
+```bash
+./mvnw spring-boot:run
 ```
 
 - Web UI: http://localhost:8080
@@ -76,14 +102,33 @@ does not launch the Spring Boot application.
 
 ## Test
 
+Run the Java tests with the Maven Wrapper.
+
+**Windows (PowerShell):**
+
 ```powershell
-.\mvnw.cmd test                                                       # service, web flow, and Spring context
-powershell -ExecutionPolicy Bypass -File scripts\mcp-smoke-test.ps1   # asserted MCP handshake, tool set, and add_todo result
+.\mvnw.cmd test
 ```
 
-Keep `spring-boot:run` running in one terminal while executing the MCP smoke
-test from a second terminal. The script exits with an error unless the expected
-five tools and a valid `add_todo` result are returned.
+**macOS or Linux:**
+
+```bash
+./mvnw test
+```
+
+To test the MCP handshake, tool set, and `add_todo` result, keep
+`spring-boot:run` running in one terminal and run the smoke test from a second:
+
+```powershell
+# PowerShell 7 on Windows, macOS, or Linux
+pwsh -File ./scripts/mcp-smoke-test.ps1
+
+# Windows PowerShell 5.1
+powershell -ExecutionPolicy Bypass -File scripts\mcp-smoke-test.ps1
+```
+
+The script exits with an error unless the expected five tools and a valid
+`add_todo` result are returned.
 
 The UI exposes stable `data-testid` hooks (`new-todo-input`, `add-todo`, `todo-item`,
 `delete-todo`) so a Playwright run can drive add → complete → delete end to end.
@@ -95,16 +140,15 @@ from its code-lens and approve the server/tools when VS Code prompts.
 
 ---
 
-## Next step — GitHub Copilot cloud agent
+## Optional next step — GitHub Copilot coding agent
 
 Todos are kept **in memory** on purpose. A ready-to-assign issue,
 [docs/copilot-agent-issue.md](docs/copilot-agent-issue.md), asks the cloud agent to add
 Spring Data JPA + H2 persistence and a `dueDate` field. This requires a GitHub
-account with Copilot coding agent enabled and write access to the repository.
-Assign it to **@copilot** (or use **"Delegate to coding agent"** in the GitHub
-Pull Requests view) before recording, let the asynchronous run finish, then
-review and test the draft PR. Keep it unmerged until the earlier demo episodes
-have been recorded so their in-memory, five-tool baseline remains reproducible.
+account with Copilot coding agent enabled and write access to a repository or
+fork. Create an issue from the prepared description, assign it to **@copilot**
+(or use **"Delegate to coding agent"** in the GitHub Pull Requests view), then
+review and test the draft pull request before deciding whether to merge it.
 
 ---
 
@@ -116,4 +160,17 @@ to demo **Java** development in **VS Code** with **GitHub Copilot**:
 1. Build and debug a Spring Boot app (Extension Pack for Java, Spring Initializr, breakpoints, live memory view).
 2. Expose the endpoints to Copilot as **MCP** tools.
 3. Let Copilot test the UI end to end with **Playwright**.
-4. Hand a new feature to the **Copilot cloud agent**, then review and validate the draft PR it opens.
+4. Hand a new feature to the **GitHub Copilot coding agent**, then review and validate the draft PR it opens.
+
+---
+
+## Contributing and support
+
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
+- Use [SUPPORT.md](SUPPORT.md) for help and issue-reporting guidance.
+- Report vulnerabilities according to [SECURITY.md](SECURITY.md), not through a public issue.
+- Participation is governed by the [Microsoft Open Source Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.

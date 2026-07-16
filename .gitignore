@@ -3,6 +3,12 @@
 target/
 .mvn/wrapper/maven-wrapper.jar
 
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+*.log
+
 # Demo recording artifacts and capture tooling
 scripts/Demo-Recording-Script.docx
 scripts/capture-initializr.ps1
