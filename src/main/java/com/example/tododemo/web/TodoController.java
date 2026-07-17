@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+
 /**
  * Server-rendered todo web UI backed by the same service as the MCP tools.
  */
@@ -23,12 +25,14 @@ public class TodoController {
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("todos", service.list());
+        model.addAttribute("today", LocalDate.now());
         return "index";
     }
 
     @PostMapping("/todos")
-    public String addForm(@RequestParam String title) {
-        service.add(title);
+    public String addForm(@RequestParam String title,
+                          @RequestParam(required = false) LocalDate dueDate) {
+        service.add(title, dueDate);
         return "redirect:/";
     }
 

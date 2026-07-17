@@ -1,18 +1,26 @@
 package com.example.tododemo.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.time.Instant;
+import java.time.LocalDate;
 
 /**
- * A single todo item.
- *
- * <p>Mutable so the in-memory store can assign an id and change completion.
+ * A single todo item, persisted via JPA.
  */
+@Entity
 public class Todo {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private boolean completed;
     private Instant createdAt;
+    private LocalDate dueDate;
 
     public Todo() {
     }
@@ -22,6 +30,14 @@ public class Todo {
         this.title = title;
         this.completed = completed;
         this.createdAt = createdAt;
+    }
+
+    public Todo(Long id, String title, boolean completed, Instant createdAt, LocalDate dueDate) {
+        this.id = id;
+        this.title = title;
+        this.completed = completed;
+        this.createdAt = createdAt;
+        this.dueDate = dueDate;
     }
 
     public Long getId() {
@@ -50,5 +66,13 @@ public class Todo {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
 }

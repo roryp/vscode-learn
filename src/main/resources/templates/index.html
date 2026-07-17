@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Java TODO Demo</title>
     <link rel="icon" href="data:," />
+    <style>
+        .overdue { color: #c00; font-weight: bold; }
+        .due-date { font-size: 0.85em; color: #555; margin-left: 0.5em; }
+        .overdue .due-date { color: #c00; }
+    </style>
 </head>
 <body>
     <h1>Java TODO Demo</h1>
@@ -12,16 +17,24 @@
     <form method="post" action="/todos" autocomplete="off">
         <input type="text" name="title" placeholder="What needs doing?"
              aria-label="New todo title" data-testid="new-todo-input" required />
+        <label for="dueDate">Due:</label>
+        <input type="date" id="dueDate" name="dueDate" aria-label="Due date" />
         <button type="submit" data-testid="add-todo">Add</button>
     </form>
 
     <ul>
-        <li th:each="todo : ${todos}" data-testid="todo-item">
+        <li th:each="todo : ${todos}"
+            th:classappend="${todo.dueDate != null and todo.dueDate.isBefore(today)} ? 'overdue'"
+            data-testid="todo-item">
             <form method="post" th:action="@{/todos/{id}/toggle(id=${todo.id})}">
                 <input type="checkbox" th:checked="${todo.completed}"
                        th:attr="aria-label='Toggle ' + ${todo.title}"
                        onchange="this.form.submit()" />
                 <span th:text="${todo.title}">Todo title</span>
+                <span th:if="${todo.dueDate != null}"
+                      class="due-date"
+                      th:text="${'Due: ' + #temporals.format(todo.dueDate, 'yyyy-MM-dd')}"
+                      data-testid="due-date"></span>
                 <button type="submit" th:formaction="@{/todos/{id}/delete(id=${todo.id})}"
                         data-testid="delete-todo">Delete</button>
             </form>

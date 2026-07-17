@@ -18,6 +18,9 @@ scripts/screenshots/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### H2 file-based database ###
+data/
+
 ### STS ###
 .apt_generated
 .classpath
